@@ -1,0 +1,728 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""Pagination metadata"""
+type PaginationMeta {
+  """The total number of records"""
+  total: Int!
+
+  """The last page number"""
+  lastPage: Int!
+
+  """The current page number"""
+  currentPage: Int!
+
+  """The number of records per page"""
+  perPage: Int!
+
+  """The previous page number"""
+  prev: Int
+
+  """The next page number"""
+  next: Int
+}
+
+"""The cloudinary upload model"""
+type CloudinaryUpload {
+  """Id of the record"""
+  id: ID!
+
+  """Date the record was created"""
+  createdAt: DateTime!
+
+  """Date the record was last updated"""
+  updatedAt: DateTime!
+
+  """The public id of the file"""
+  public_id: String!
+
+  """The format of the file"""
+  format: String
+
+  """The resource type of the file"""
+  resource_type: String
+
+  """The size of the file in bytes"""
+  bytes: Float
+
+  """The width of the file in pixels"""
+  width: Float
+
+  """The height of the file in pixels"""
+  height: Float
+
+  """The URL of the file"""
+  url: String!
+
+  """The secure URL of the file"""
+  secure_url: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type PaginatedCloudinaryUploads {
+  """A list of uploaded records from the DB"""
+  data: [CloudinaryUpload!]!
+
+  """The pagination metadata"""
+  meta: PaginationMeta!
+}
+
+type Author {
+  """Id of the record"""
+  id: ID!
+
+  """Date the record was created"""
+  createdAt: DateTime!
+
+  """Date the record was last updated"""
+  updatedAt: DateTime!
+
+  """Author's first name"""
+  firstName: String!
+
+  """Author's last name"""
+  lastName: String!
+
+  """Author's bio"""
+  bio: String
+
+  """Books written by the author"""
+  books: [Book!]!
+}
+
+type Book {
+  """Id of the record"""
+  id: ID!
+
+  """Date the record was created"""
+  createdAt: DateTime!
+
+  """Date the record was last updated"""
+  updatedAt: DateTime!
+
+  """The title of the book"""
+  title: String!
+
+  """The description of the book"""
+  description: String
+
+  """The unique ISBN of the book"""
+  isbn: String!
+
+  """Whether the book is available for borrowing"""
+  available: Boolean
+
+  """The cost of the book"""
+  cost: Float
+
+  """The cost the user will incur per late day"""
+  costPerLateDay: Float
+
+  """Get the rentals of a book"""
+  rentals: [Rental]!
+
+  """Get the author of a book"""
+  author: Author
+
+  """The author id of the book"""
+  authorId: Int!
+}
+
+type Rental {
+  """Id of the record"""
+  id: ID!
+
+  """Date the record was created"""
+  createdAt: DateTime!
+
+  """Date the record was last updated"""
+  updatedAt: DateTime!
+
+  """The date the book was rented"""
+  rentedAt: DateTime!
+
+  """The date the book was returned"""
+  returnedAt: DateTime
+
+  """The user who rented the book"""
+  user: User!
+
+  """The user ID who rented the book"""
+  userId: PositiveInt!
+
+  """The book that was rented"""
+  book: Book!
+
+  """The book ID that was rented"""
+  bookId: PositiveInt!
+
+  """The late returns for this rental"""
+  lateReturns: [LateReturn!]
+}
+
+"""Integers that will have a value greater than 0."""
+scalar PositiveInt
+
+type LateReturn {
+  """Id of the record"""
+  id: ID!
+
+  """Date the record was created"""
+  createdAt: DateTime!
+
+  """Date the record was last updated"""
+  updatedAt: DateTime!
+
+  """The number of days the rental was late"""
+  lateDays: PositiveInt!
+
+  """The cost of the late return"""
+  cost: PositiveFloat!
+
+  """The ID of the rental"""
+  rentalId: PositiveInt!
+
+  """The rental that was returned late"""
+  rental: Rental!
+
+  """The user who returned the rental late"""
+  user: User!
+
+  """The ID of the user who returned the rental late"""
+  userId: PositiveInt!
+}
+
+"""Floats that will have a value greater than 0."""
+scalar PositiveFloat
+
+"""The user model"""
+type User {
+  """Id of the record"""
+  id: ID!
+
+  """Date the record was created"""
+  createdAt: DateTime!
+
+  """Date the record was last updated"""
+  updatedAt: DateTime!
+
+  """The email of the user"""
+  email: EmailAddress!
+
+  """The password of the user"""
+  password: String
+
+  """The first name of the user"""
+  firstName: String!
+
+  """The last name of the user"""
+  lastName: String!
+
+  """The role of the user"""
+  role: Role!
+
+  """Whether the user is active or not"""
+  active: Boolean!
+
+  """The rentals of the user"""
+  rentals: [Rental!]!
+
+  """The late returns of the user"""
+  lateReturns: [LateReturn!]!
+}
+
+"""
+A field whose value conforms to the standard internet email address format as specified in HTML Spec: https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address.
+"""
+scalar EmailAddress @specifiedBy(url: "https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address")
+
+"""The roles available in the system"""
+enum Role {
+  USER
+  ADMIN
+}
+
+"""The user object returned to the client"""
+type UserResponse {
+  """Id of the record"""
+  id: ID!
+
+  """Date the record was created"""
+  createdAt: DateTime!
+
+  """Date the record was last updated"""
+  updatedAt: DateTime!
+
+  """The email of the user"""
+  email: EmailAddress!
+
+  """The first name of the user"""
+  firstName: String!
+
+  """The last name of the user"""
+  lastName: String!
+
+  """The role of the user"""
+  role: Role!
+
+  """Whether the user is active or not"""
+  active: Boolean!
+}
+
+"""The response when logging in a user"""
+type LocalLoginResponse {
+  """The token to authenticate the user"""
+  token: String!
+
+  """The user that was logged in"""
+  user: UserResponse!
+}
+
+type PaginatedAuthors {
+  """The list of records"""
+  data: [Author!]!
+
+  """The pagination metadata"""
+  meta: PaginationMeta!
+}
+
+type PaginatedBooks {
+  """The list of records"""
+  data: [Book!]!
+
+  """The pagination metadata"""
+  meta: PaginationMeta!
+}
+
+"""The paginated late returns response"""
+type PaginatedLateReturns {
+  """The list of records"""
+  data: [LateReturn!]!
+
+  """The pagination metadata"""
+  meta: PaginationMeta!
+}
+
+type Query {
+  """Find all uploaded file data that is stored in the DB"""
+  getCloudinaryUploads(
+    """The page number"""
+    page: PositiveInt = 1
+
+    """The number of records per page"""
+    perPage: PositiveInt = 20
+
+    """The search term"""
+    search: String
+  ): PaginatedCloudinaryUploads!
+
+  """Get all books"""
+  getBooks(
+    """The page number"""
+    page: PositiveInt = 1
+
+    """The number of records per page"""
+    perPage: PositiveInt = 20
+
+    """The search term"""
+    search: String
+  ): PaginatedBooks!
+
+  """Get a book by id"""
+  getBook(
+    """The id of the record"""
+    id: PositiveInt!
+  ): Book
+
+  """Get all authors"""
+  getAuthors(
+    """The page number"""
+    page: PositiveInt = 1
+
+    """The number of records per page"""
+    perPage: PositiveInt = 20
+
+    """The search term"""
+    search: String
+  ): PaginatedAuthors!
+
+  """Get author by ID"""
+  getAuthor(
+    """The id of the record"""
+    id: PositiveInt!
+  ): Author!
+
+  """Find all rentals"""
+  getRentals: [Rental]!
+
+  """Find a rental by id"""
+  getRental(
+    """The id of the record"""
+    id: PositiveInt!
+  ): Rental
+
+  """Find all users"""
+  getUsers: [User!]!
+
+  """Find a user by id"""
+  getUser(id: Int!): User!
+
+  """Find all late returns"""
+  getLateReturns(
+    """The page number"""
+    page: PositiveInt = 1
+
+    """The number of records per page"""
+    perPage: PositiveInt = 20
+
+    """The search term"""
+    search: String
+  ): PaginatedLateReturns!
+  getLateReturn(
+    """The id of the record"""
+    id: PositiveInt!
+  ): LateReturn
+
+  """Get the current user"""
+  me: UserResponse!
+}
+
+type Mutation {
+  """Delete a file by its ID"""
+  removeCloudinaryUpload(
+    """The id of the record"""
+    id: PositiveInt!
+  ): CloudinaryUpload!
+
+  """Create a new book"""
+  createBook(input: CreateBookInput!): Book!
+
+  """Update a book by id"""
+  updateBook(input: UpdateBookInput!): Book!
+
+  """Remove a book by id"""
+  removeBook(
+    """The id of the record"""
+    id: PositiveInt!
+  ): Book!
+
+  """Create new author"""
+  createAuthor(input: CreateAuthorInput!): Author!
+
+  """Update author by ID"""
+  updateAuthor(input: UpdateAuthorInput!): Author!
+
+  """Remove author by ID"""
+  removeAuthor(
+    """The id of the record"""
+    id: PositiveInt!
+  ): Author!
+
+  """Create a new rental"""
+  createRental(input: CreateRentalInput!): Rental!
+
+  """Update a rental by id"""
+  updateRental(input: UpdateRentalInput!): Rental!
+
+  """Remove a rental by id"""
+  removeRental(
+    """The id of the record"""
+    id: PositiveInt!
+  ): Rental!
+
+  """Create a new user"""
+  createUser(input: CreateUserInput!): User!
+
+  """Update a user by id"""
+  updateUser(updateUserInput: UpdateUserInput!): User!
+
+  """Remove a user by id"""
+  removeUser(id: Int!): User!
+
+  """Create a new late return"""
+  createLateReturn(input: CreateLateReturnInput!): LateReturn!
+
+  """Update a late return by id"""
+  updateLateReturn(input: UpdateLateReturnInput!): LateReturn!
+
+  """Remove a late return by id"""
+  removeLateReturn(
+    """The id of the record"""
+    id: PositiveInt!
+  ): LateReturn!
+
+  """Logs a user in with email and password"""
+  login(input: LoginInput!): LocalLoginResponse!
+
+  """Registers a new user"""
+  register(input: RegisterInput!): UserResponse!
+
+  """Update the current user"""
+  updateMe(input: UpdateCurrentUserInput!): UserResponse!
+
+  """Forgot password"""
+  forgotPassword(input: ForgotPasswordInput!): String!
+
+  """Reset password"""
+  resetPassword(input: ResetPasswordInput!): String!
+}
+
+"""Input type for creating a book"""
+input CreateBookInput {
+  """The title of the book"""
+  title: String!
+
+  """The description of the book"""
+  description: String
+
+  """The unique ISBN of the book"""
+  isbn: String!
+
+  """Whether the book is available for borrowing"""
+  available: Boolean = true
+
+  """The cost of the book"""
+  cost: Float = 0
+
+  """The cost of the book each day it is late"""
+  costPerLateDay: Float = 0
+
+  """The author of the book"""
+  author: CreateAuthorInput
+}
+
+input CreateAuthorInput {
+  """Author's first name"""
+  firstName: String!
+
+  """Author's last name"""
+  lastName: String!
+
+  """Author's bio"""
+  bio: String
+
+  """Books written by the author"""
+  books: [CreateBookInputNoAuthor]
+}
+
+input CreateBookInputNoAuthor {
+  """The title of the book"""
+  title: String!
+
+  """The description of the book"""
+  description: String
+
+  """The unique ISBN of the book"""
+  isbn: String!
+
+  """Whether the book is available for borrowing"""
+  available: Boolean = true
+
+  """The cost of the book"""
+  cost: Float = 0
+
+  """The cost of the book each day it is late"""
+  costPerLateDay: Float = 0
+}
+
+input UpdateBookInput {
+  """The title of the book"""
+  title: String
+
+  """The description of the book"""
+  description: String
+
+  """The unique ISBN of the book"""
+  isbn: String
+
+  """Whether the book is available for borrowing"""
+  available: Boolean = true
+
+  """The cost of the book"""
+  cost: Float = 0
+
+  """The cost of the book each day it is late"""
+  costPerLateDay: Float = 0
+
+  """The id of the book to update"""
+  id: Int!
+}
+
+input UpdateAuthorInput {
+  """Author's first name"""
+  firstName: String
+
+  """Author's last name"""
+  lastName: String
+
+  """Author's bio"""
+  bio: String
+
+  """Author's ID"""
+  id: Int!
+}
+
+input CreateRentalInput {
+  """The date the book was rented"""
+  rentedAt: DateTime
+
+  """The date the book was returned"""
+  returnedAt: DateTime
+
+  """The user ID who rented the book"""
+  userId: PositiveInt!
+
+  """The book ID that was rented"""
+  bookId: PositiveInt!
+}
+
+input UpdateRentalInput {
+  """The date the book was rented"""
+  rentedAt: DateTime
+
+  """The date the book was returned"""
+  returnedAt: DateTime
+
+  """The user ID who rented the book"""
+  userId: PositiveInt
+
+  """The book ID that was rented"""
+  bookId: PositiveInt
+
+  """The ID of the rental to update"""
+  id: PositiveInt!
+}
+
+"""The data required to create a new user"""
+input CreateUserInput {
+  """The email of the user"""
+  email: String!
+
+  """The password of the user"""
+  password: String
+
+  """The first name of the user"""
+  firstName: String!
+
+  """The last name of the user"""
+  lastName: String!
+
+  """The role of the user"""
+  role: Role = USER
+
+  """Whether the user is active or not"""
+  active: Boolean! = true
+}
+
+"""The data required to update a user"""
+input UpdateUserInput {
+  """The email of the user"""
+  email: String!
+
+  """The first name of the user"""
+  firstName: String!
+
+  """The last name of the user"""
+  lastName: String!
+
+  """The role of the user"""
+  role: Role = USER
+
+  """Whether the user is active or not"""
+  active: Boolean! = true
+
+  """The id of the user"""
+  id: Int!
+}
+
+input CreateLateReturnInput {
+  """The number of days the rental was late"""
+  lateDays: PositiveInt!
+
+  """The cost the user has to pay for teh late return"""
+  cost: PositiveFloat!
+
+  """The ID of the rental"""
+  rentalId: PositiveInt!
+
+  """The ID of the user who returned the rental late"""
+  userId: PositiveInt!
+}
+
+input UpdateLateReturnInput {
+  """The number of days the rental was late"""
+  lateDays: PositiveInt
+
+  """The cost the user has to pay for teh late return"""
+  cost: PositiveFloat
+
+  """The ID of the rental"""
+  rentalId: PositiveInt
+
+  """The ID of the user who returned the rental late"""
+  userId: PositiveInt
+
+  """The ID of the late return"""
+  id: PositiveInt!
+}
+
+"""The data required to log in a user"""
+input LoginInput {
+  """The email of the user"""
+  email: EmailAddress!
+
+  """The password of the user"""
+  password: String!
+}
+
+"""The data required to register"""
+input RegisterInput {
+  """The email of the user"""
+  email: EmailAddress!
+
+  """The password of the user"""
+  password: String!
+
+  """The first name of the user"""
+  firstName: String!
+
+  """The last name of the user"""
+  lastName: String!
+}
+
+"""The data required to update a user"""
+input UpdateCurrentUserInput {
+  """The email of the user"""
+  email: EmailAddress
+
+  """The first name of the user"""
+  firstName: String
+
+  """The last name of the user"""
+  lastName: String
+}
+
+"""The data needed to send forgot password email"""
+input ForgotPasswordInput {
+  """The email of the user"""
+  email: EmailAddress!
+}
+
+"""The data needed to set a new password"""
+input ResetPasswordInput {
+  """The token needed to reset the password"""
+  token: UUID!
+
+  """The new password of the user"""
+  password: String!
+}
+
+"""
+A field whose value is a generic Universally Unique Identifier: https://en.wikipedia.org/wiki/Universally_unique_identifier.
+"""
+scalar UUID

@@ -1,0 +1,51 @@
+networks:
+  book-rental:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  app-logs:
+
+services:
+  db:
+    image: mysql
+    restart: always
+    networks:
+      - book-rental
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  book-rental:
+    image: book-rental
+    depends_on:
+      - db
+    networks:
+      - book-rental
+    volumes:
+      - app-logs:/app/logs
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE}"
+    build: .
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:${PORT}/health || exit 1"]
+      interval: 30m
+      timeout: 30s
+      retries: 5
+      start_period: 15s
+    command: >
+      sh -c "sleep 7 && npx -y prisma db push && node dist/main"

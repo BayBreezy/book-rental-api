@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  email                     String       @unique
+  password                  String
+  firstName                 String
+  lastName                  String
+  role                      Role         @default(USER)
+  active                    Boolean?     @default(true)
+  rentals                   Rental[] // Relation to rentals
+  lateReturns               LateReturn[] // Relation to late returns
+  forgotPasswordToken       String?
+  forgotPasswordTokenExpiry DateTime?
+  verified                  Boolean?     @default(false)
+  verificationToken         String?
+
+  @@index([email])
+  @@map("users")
+}
+
+model Book {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  title          String
+  description    String?
+  isbn           String   @unique
+  available      Boolean? @default(true) // True if the book is available for rental
+  rentals        Rental[] // Relation to rentals
+  cost           Float?
+  costPerLateDay Float?
+
+  author   Author @relation(fields: [authorId], references: [id])
+  authorId Int
+
+  @@index([title])
+  @@map("books")
+}
+
+model Author {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  firstName String
+  lastName  String
+  bio       String?
+  books     Book[] // Relation to books
+
+  @@index([firstName, lastName])
+  @@map("authors")
+}
+
+model Rental {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  rentedAt    DateTime?    @default(now())
+  returnedAt  DateTime?
+  user        User         @relation(fields: [userId], references: [id])
+  userId      Int
+  book        Book         @relation(fields: [bookId], references: [id])
+  bookId      Int
+  lateReturns LateReturn[]
+
+  @@map("rentals")
+}
+
+model LateReturn {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  lateDays Int // Number of days late
+  cost     Float // Cost of the late return
+
+  rentalId Int    @unique // Each rental can have only one late return
+  rental   Rental @relation(fields: [rentalId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+  userId   Int
+
+  @@map("late_returns")
+}
+
+model CloudinaryUpload {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  public_id     String
+  format        String?
+  resource_type String?
+  bytes         Int?
+  width         Int?
+  height        Int?
+  url           String
+  secure_url    String
+
+  @@map("cloudinary_uploads")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
