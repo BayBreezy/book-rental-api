@@ -73,7 +73,7 @@
     "@nestjs/axios": "^4.0.0",
     "@nestjs/common": "^11.0.7",
     "@nestjs/config": "^4.0.0",
-    "@nestjs/core": "^11.0.7",
+    "@nestjs/core": "^11.0.11",
     "@nestjs/graphql": "^13.0.2",
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/mapped-types": "^2.1.0",
